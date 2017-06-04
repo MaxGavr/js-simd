@@ -29,7 +29,7 @@ var operationRanks = {
     firstIfTrue: 0, // multiplication
     secondIf: 0, // comparison
     secondIfTrue: 0, // multiplication + addition
-    secondIfElse: 0 // two multiplication + module + subtraction
+    secondIfFalse: 0 // two multiplication + module + subtraction
 }
 
 function randomFloat(minValue = -1, maxValue = 1, precision = 2){
@@ -130,26 +130,39 @@ function calculateTime(amount){
     return mul + sum + sub + comp + abs + additionalSums;
 }
 
-function calculateParallelTime(amount){
+function calculateParallelTime(){
     var T = 0;
 
-    if (amount.addition > 0)
-        T += Math.ceil(amount.addition / n) * ADDITION_TIME;
-    if (amount.subtraction > 0)
-        T += Math.ceil(amount.subtraction / n) * SUBTRACTION_TIME;
-    if (amount.multiplication > 0)
-        T += Math.ceil(amount.multiplication / n) * MULTIPLICATION_TIME;
-    if (amount.absolute > 0)
-        T += Math.ceil(amount.absolute / n) * ABS_TIME;
-    if (amount.comparison > 0)
-        T += Math.ceil(amount.comparison / n) * COMPARE_TIME;
+    T += Math.ceil(operationRanks.firstIf * 2 / n) * ABS_TIME;
+    T += Math.ceil(operationRanks.firstIf / n) * COMPARE_TIME;
+    T += Math.ceil(operationRanks.firstIfTrue / n) * MULTIPLICATION_TIME;
+    T += Math.ceil(operationRanks.secondIf / n) * COMPARE_TIME;
+    T += Math.ceil(operationRanks.secondIfTrue / n) * MULTIPLICATION_TIME;
+    T += Math.ceil(operationRanks.secondIfTrue / n) * ADDITION_TIME;
+    T += Math.ceil(operationRanks.secondIfFalse * 2 / n) * MULTIPLICATION_TIME;
+    T += Math.ceil(operationRanks.secondIfFalse / n) * ABS_TIME;
+    T += Math.ceil(operationRanks.secondIfFalse / n) * SUBTRACTION_TIME;
 
     return T;
 }
 
 function calculateParallelSumTime(){
     if (n > 1){
-        var parallelSumsCount = Math.ceil(m / n);
+        var parallelSumsCount = 0;
+        var M = m;
+        while (true){
+            if (Math.floor(M / 2) >= n){
+                M -= n;
+                parallelSumsCount++;
+            }
+            else{
+                M = Math.ceil(M / 2);
+                parallelSumsCount++;
+                if (M == 1){
+                    break;
+                }
+            }        
+        }
         return parallelSumsCount * p * q * ADDITION_TIME;
     }
     else
@@ -157,18 +170,11 @@ function calculateParallelSumTime(){
 }
 
 function calculateD(){
-    var r = totalOperations.multiplication +
-            totalOperations.addition +
-            totalOperations.subtraction +
-            totalOperations.comparison +
-            totalOperations.absolute +
-            calculateParallelSumTime() / ADDITION_TIME;  
-
     var Lavg = (operationRanks.firstIf * (2 * ABS_TIME  + COMPARE_TIME) +
                operationRanks.firstIfTrue * MULTIPLICATION_TIME +
                operationRanks.secondIf * COMPARE_TIME +
                operationRanks.secondIfTrue * (MULTIPLICATION_TIME + ADDITION_TIME) +
-               operationRanks.secondIfElse * (2 * MULTIPLICATION_TIME + ABS_TIME + SUBTRACTION_TIME * COMPARE_TIME) +
+               operationRanks.secondIfFalse * (2 * MULTIPLICATION_TIME + ABS_TIME + SUBTRACTION_TIME * COMPARE_TIME) +
                calculateParallelSumTime()) / (m * p * q);
     var Lsum = Tn;
     return Lsum / Lavg;
@@ -177,16 +183,18 @@ function calculateD(){
 function reset(){
     T1 = 0;
     Tn = 0;
+
     totalOperations.multiplication = 0;
     totalOperations.addition = 0;
     totalOperations.subtraction = 0;
     totalOperations.comparison = 0;
     totalOperations.absolute = 0;
+
     operationRanks.firstIf = 0;
     operationRanks.firstIfTrue = 0;
     operationRanks.secondIf = 0;
     operationRanks.secondIfTrue = 0;
-    operationRanks.secondIfElse = 0;
+    operationRanks.secondIfFalse = 0;
 }
 
 function calculate(A, B){
@@ -235,7 +243,7 @@ function calculate(A, B){
                         amount.multiplication += 2;
                         amount.absolute += 1;
                         amount.subtraction += 1;
-                        operationRanks.secondIfElse += 1;
+                        operationRanks.secondIfFalse += 1;
                     }
                 }
                 c += d;
@@ -243,11 +251,11 @@ function calculate(A, B){
 
             C[i][j] = c;
             T1 += calculateTime(amount);
-            Tn += calculateParallelTime(amount);
             countOperations(amount);
         }
     }
 
+    Tn += calculateParallelTime();
     Tn += calculateParallelSumTime();
     return C;
 }
