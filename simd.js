@@ -16,6 +16,22 @@ var Tn = 0;
 var p, m, q;
 var n;
 
+var totalOperations = {
+    addition: 0,
+    subtraction: 0,
+    multiplication: 0,
+    absolute: 0,
+    comparison: 0
+};
+
+var operationRanks = {
+    firstIf: 0, // two modules + comparison
+    firstIfTrue: 0, // multiplication
+    secondIf: 0, // comparison
+    secondIfTrue: 0, // multiplication + addition
+    secondIfElse: 0 // two multiplication + module + subtraction
+}
+
 function randomFloat(minValue = -1, maxValue = 1, precision = 2){
     var number = Math.min(minValue + (Math.random() * (maxValue - minValue)), maxValue);
     return parseFloat(number.toFixed(precision));
@@ -94,6 +110,14 @@ function getParameters(){
     n = document.getElementById("input_n").value;
 }
 
+function countOperations(amount){
+    totalOperations.addition += amount.addition;
+    totalOperations.multiplication += amount.multiplication;
+    totalOperations.subtraction += amount.subtraction;
+    totalOperations.comparison += amount.comparison;
+    totalOperations.absolute += amount.absolute;
+}
+
 function calculateTime(amount){
     var mul = amount.multiplication * MULTIPLICATION_TIME;
     var sum = amount.addition * ADDITION_TIME;
@@ -123,10 +147,51 @@ function calculateParallelTime(amount){
     return T;
 }
 
-function calculate(A, B){
-    var C = generateMatrix(p, q, true);
+function calculateParallelSumTime(){
+    if (n > 1){
+        var parallelSumsCount = Math.ceil(m / n);
+        return parallelSumsCount * p * q * ADDITION_TIME;
+    }
+    else
+        return (m - 1) * p * q * ADDITION_TIME;
+}
+
+function calculateD(){
+    var r = totalOperations.multiplication +
+            totalOperations.addition +
+            totalOperations.subtraction +
+            totalOperations.comparison +
+            totalOperations.absolute +
+            calculateParallelSumTime() / ADDITION_TIME;  
+
+    var Lavg = (operationRanks.firstIf * (2 * ABS_TIME  + COMPARE_TIME) +
+               operationRanks.firstIfTrue * MULTIPLICATION_TIME +
+               operationRanks.secondIf * COMPARE_TIME +
+               operationRanks.secondIfTrue * (MULTIPLICATION_TIME + ADDITION_TIME) +
+               operationRanks.secondIfElse * (2 * MULTIPLICATION_TIME + ABS_TIME + SUBTRACTION_TIME * COMPARE_TIME) +
+               calculateParallelSumTime()) / (m * p * q);
+    var Lsum = Tn;
+    return Lsum / Lavg;
+}
+
+function reset(){
     T1 = 0;
     Tn = 0;
+    totalOperations.multiplication = 0;
+    totalOperations.addition = 0;
+    totalOperations.subtraction = 0;
+    totalOperations.comparison = 0;
+    totalOperations.absolute = 0;
+    operationRanks.firstIf = 0;
+    operationRanks.firstIfTrue = 0;
+    operationRanks.secondIf = 0;
+    operationRanks.secondIfTrue = 0;
+    operationRanks.secondIfElse = 0;
+}
+
+function calculate(A, B){
+    var C = generateMatrix(p, q, true);
+    reset();
 
     for (var i = 0; i < p; i++){
         for (var j = 0; j < q; j++){
@@ -147,22 +212,30 @@ function calculate(A, B){
 
                 amount.comparison += 1;
                 amount.absolute += 2;
+                operationRanks.firstIf += 1;
                 if (Math.abs(a) <= Math.abs(b)){
                     d = a * b;
+
                     amount.multiplication += 1;
+                    operationRanks.firstIfTrue += 1;
                 }
                 else{
                     amount.comparison += 1;
+                    operationRanks.secondIf += 1;
                     if (a == 0){
                         d = a * a + b;
+
                         amount.multiplication += 1;
                         amount.addition += 1;
+                        operationRanks.secondIfTrue += 1;
                     }
                     else{
                         d = a * a - Math.abs(a * b);
+
                         amount.multiplication += 2;
                         amount.absolute += 1;
                         amount.subtraction += 1;
+                        operationRanks.secondIfElse += 1;
                     }
                 }
                 c += d;
@@ -171,16 +244,11 @@ function calculate(A, B){
             C[i][j] = c;
             T1 += calculateTime(amount);
             Tn += calculateParallelTime(amount);
+            countOperations(amount);
         }
     }
 
-    if (n > 1){
-        var parallelSumsCount = Math.ceil((m + 1) / n);
-        Tn += parallelSumsCount * p * q * ADDITION_TIME;
-    }
-    else
-        Tn += (m - 1) * p * q * ADDITION_TIME;
-
+    Tn += calculateParallelSumTime();
     return C;
 }
 
@@ -203,6 +271,8 @@ function drawCharts(){
     drawChart2();
     drawChart3();
     drawChart4();
+    drawChart5();
+    drawChart6();
 }
 
 function drawChart1() {
@@ -393,6 +463,102 @@ function drawChart4() {
         };
 
         var chart = new google.charts.Line(document.getElementById('chart_e_r'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+}
+
+function drawChart5() {
+    google.charts.load('current', {'packages':['line']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+
+        var rows = [];
+
+        data.addColumn('number', 'n');
+
+        for (var i = 1; i <= CHART_RANGE; i++) {
+            rows.push([i]);
+            data.addColumn('number', 'r = ' + i);
+
+            m = i;
+
+            for (var j = 1; j <= CHART_RANGE; j++) {
+                n = j;
+
+                var A = generateMatrix(p, m);
+                var B = generateMatrix(m, q);
+                var C = calculate(A, B);
+
+                rows[i - 1].push(calculateD());
+            }
+        }
+        data.addRows(rows);
+
+        var options = {
+            chart: {
+                title: 'График зависимости D(n,r) от количества процессорных элементов n'
+            },
+            hAxis: {
+                title: "Количество процессорных элементов n"
+            },
+            vAxis: {
+                title: "Коэффициент расхождения программы D"
+            },
+            width: CHART_WIDTH,
+            height: CHART_HEIGHT
+        };
+
+        var chart = new google.charts.Line(document.getElementById('chart_D_n'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+}
+
+function drawChart6() {
+    google.charts.load('current', {'packages':['line']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+
+        var rows = [];
+
+        data.addColumn('number', 'r');
+
+        for (var i = 1; i <= CHART_RANGE; i++) {
+            rows.push([i]);
+            data.addColumn('number', 'n = ' + i);
+
+            n = i;
+
+            for (var j = 1; j <= CHART_RANGE; j++) {
+                m = j;
+
+                var A = generateMatrix(p, m);
+                var B = generateMatrix(m, q);
+                var C = calculate(A, B);
+
+                rows[i - 1].push(calculateD());
+            }
+        }
+        data.addRows(rows);
+
+        var options = {
+            chart: {
+                title: 'График зависимости D(n,r) от ранга задачи r'
+            },
+            hAxis: {
+                title: "Ранг задачи r"
+            },
+            vAxis: {
+                title: "Коэффициент расхождения программы D"
+            },
+            width: CHART_WIDTH,
+            height: CHART_HEIGHT
+        };
+
+        var chart = new google.charts.Line(document.getElementById('chart_D_r'));
         chart.draw(data, google.charts.Line.convertOptions(options));
     }
 }
