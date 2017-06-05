@@ -32,12 +32,15 @@ var operationRanks = {
     secondIfFalse: 0 // two multiplication + module + subtraction
 }
 
-function randomFloat(minValue = -1, maxValue = 1, precision = 2){
-    var number = Math.min(minValue + (Math.random() * (maxValue - minValue)), maxValue);
-    return parseFloat(number.toFixed(precision));
-}
+
 
 function generateMatrix(x, y, empty = false){
+
+    function randomFloat(minValue = -1, maxValue = 1, precision = 2){
+        var number = Math.min(minValue + (Math.random() * (maxValue - minValue)), maxValue);
+        return parseFloat(number.toFixed(precision));
+    }
+
     var result = [];
     for (var i = 0; i < x; i++){
         result.push([]);
@@ -95,19 +98,17 @@ function printResults(A, B, C){
     document.getElementById("time_n").innerHTML = "<b> Tn = " + Tn + " </b>";
 }
 
-function getTimes(){
-    ADDITION_TIME = parseInt(document.getElementById("input_t1").value);
-    SUBTRACTION_TIME = parseInt(document.getElementById("input_t2").value);
-    MULTIPLICATION_TIME = parseInt(document.getElementById("input_t3").value);
-    ABS_TIME = parseInt(document.getElementById("input_t4").value);
-    COMPARE_TIME = parseInt(document.getElementById("input_t5").value);
-}
-
 function getParameters(){
     p = document.getElementById("input_p").value;
     m = document.getElementById("input_m").value;
     q = document.getElementById("input_q").value;
     n = document.getElementById("input_n").value;
+
+    ADDITION_TIME = parseInt(document.getElementById("input_t1").value);
+    SUBTRACTION_TIME = parseInt(document.getElementById("input_t2").value);
+    MULTIPLICATION_TIME = parseInt(document.getElementById("input_t3").value);
+    ABS_TIME = parseInt(document.getElementById("input_t4").value);
+    COMPARE_TIME = parseInt(document.getElementById("input_t5").value);
 }
 
 function countOperations(amount){
@@ -148,17 +149,17 @@ function calculateParallelTime(){
     return T;
 }
 
-function calculateParallelStages(amount){
+function calculateParallelStages(amountOfOperations){
     if (n > 1){
-        var stages = Math.ceil(amount / n);
+        var stages = Math.ceil(amountOfOperations / n);
     }
     else{
-        stages = amount;
+        stages = amountOfOperations;
     }
     return stages;
 }
 
-function calculateD(){
+function calculateDivergency(){
     var Lavg = (operationRanks.firstIf * COMPARE_TIME * 2+
                 operationRanks.firstIf * 2 * ABS_TIME +
                operationRanks.firstIfTrue * MULTIPLICATION_TIME * 2+
@@ -253,7 +254,6 @@ function calculate(A, B){
 
 function process(){
     getParameters();
-    getTimes();
     
     var A = generateMatrix(p, m);
     var B = generateMatrix(m, q);
@@ -490,7 +490,7 @@ function drawChart5() {
                 var B = generateMatrix(m, q);
                 var C = calculate(A, B);
 
-                rows[i - 1].push(calculateD());
+                rows[i - 1].push(calculateDivergency());
             }
         }
         data.addRows(rows);
@@ -538,7 +538,7 @@ function drawChart6() {
                 var B = generateMatrix(m, q);
                 var C = calculate(A, B);
 
-                rows[i - 1].push(calculateD());
+                rows[i - 1].push(calculateDivergency());
             }
         }
         data.addRows(rows);
