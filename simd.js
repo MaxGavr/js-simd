@@ -52,17 +52,6 @@ function generateMatrix(x, y, empty = false){
     return result;
 }
 
-function formatMatrix(A, precision = 2){
-    var result = [];
-    for (var i = 0; i < A.length; i++){
-        result.push([]);
-        for (var j = 0; j < A[i].length; j++){
-            result[i].push(parseFloat(A[i][j].toFixed(precision)));;
-        }
-    }
-    return result;
-}
-
 function printResults(A, B, C){
 
     function printMatrixToTable(id, matrix){
@@ -88,6 +77,17 @@ function printResults(A, B, C){
                 }
             }
         }
+    }
+
+    function formatMatrix(A, precision = 2){
+        var result = [];
+        for (var i = 0; i < A.length; i++){
+            result.push([]);
+            for (var j = 0; j < A[i].length; j++){
+                result[i].push(parseFloat(A[i][j].toFixed(precision)));;
+            }
+        }
+        return result;
     }
 
     printMatrixToTable("tableA", A);
@@ -254,34 +254,33 @@ function drawCharts(){
     var A = generateMatrix(p, CHART_RANGE);
     var B = generateMatrix(CHART_RANGE, q);
 
-    drawChart1(A, B);
-    drawChart2(A, B);
-    drawChart3(A, B);
-    drawChart4(A, B);
-    drawChart5(A, B);
-    drawChart6(A, B);
+    drawChart_Ky_n(A, B);
+    drawChart_Ky_r(A, B);
+    drawChart_e_n(A, B);
+    drawChart_e_r(A, B);
+    drawChart_D_n(A, B);
+    drawChart_D_r(A, B);
 }
 
-// Ky(n)
-function drawChart1(A, B) {
+function drawChart_Ky_n(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-        var rows = [];
-
         data.addColumn('number', 'n');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'r = ' + c);
-        }
+        
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             n = i;
+
+            data.addColumn('number', 'r = ' + i);
             rows.push([n]);
 
             for (var j = 1; j <= CHART_RANGE; j++){
                 m = j;
+
                 var C = calculate(A, B);
                 rows[i - 1].push(T1 / Tn);
             }
@@ -307,22 +306,19 @@ function drawChart1(A, B) {
     }
 }
 
-// Ky(r)
-function drawChart2(A, B) {
+function drawChart_Ky_r(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-        var rows = [];
-
         data.addColumn('number', 'r');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'n = ' + c);
-        }
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             m = i;
+            
+            data.addColumn('number', 'n = ' + i);
             rows.push([m]);
 
             for (var j = 1; j <= CHART_RANGE; j++){
@@ -353,26 +349,24 @@ function drawChart2(A, B) {
     }
 }
 
-// e(n)
-function drawChart3(A, B) {
+function drawChart_e_n(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-        var rows = [];
-
         data.addColumn('number', 'n');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'r = ' + c);
-        }
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             n = i;
 
+            data.addColumn('number', 'r = ' + i);
             rows.push([n]);
+
             for (var j = 1; j <= CHART_RANGE; j++){
                 m = j;
+
                 var C = calculate(A, B);
                 rows[i - 1].push(T1 / Tn / n);
             }
@@ -398,22 +392,19 @@ function drawChart3(A, B) {
     }
 }
 
-// e(r)
-function drawChart4(A, B) {
+function drawChart_e_r(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-        var rows = [];
-
         data.addColumn('number', 'r');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'n = ' + c);
-        }
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             m = i;
+
+            data.addColumn('number', 'n = ' + i);
             rows.push([m]);
 
             for (var j = 1; j <= CHART_RANGE; j++){
@@ -444,26 +435,24 @@ function drawChart4(A, B) {
     }
 }
 
-// D(n)
-function drawChart5(A, B) {
+function drawChart_D_n(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-        var rows = [];
-
         data.addColumn('number', 'n');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'r = ' + c);
-        }
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             n = i;
+
+            data.addColumn('number', 'r = ' + i);
             rows.push([n]);
 
             for (var j = 1; j <= CHART_RANGE; j++){
                 m = j;
+
                 var C = calculate(A, B);
                 rows[i - 1].push(calculateDivergency());
             }
@@ -489,23 +478,19 @@ function drawChart5(A, B) {
     }
 }
 
-// D(r)
-function drawChart6(A, B) {
+function drawChart_D_r(A, B) {
     google.charts.load('current', {'packages':['line']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
         var data = new google.visualization.DataTable();
-
-        var rows = [];
-
         data.addColumn('number', 'r');
-        for (var c = 1; c <= CHART_RANGE; c++){
-            data.addColumn('number', 'n = ' + c);
-        }
+        var rows = [];
 
         for (var i = 1; i <= CHART_RANGE; i++){
             m = i;
+
+            data.addColumn('number', 'n = ' + i);
             rows.push([m]);
 
             for (var j = 1; j <= CHART_RANGE; j++){
