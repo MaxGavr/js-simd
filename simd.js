@@ -176,7 +176,7 @@ function calculateDivergency(){
     var Lavg = (operationRanks.firstIf * COMPARE_TIME  * 2 +
                operationRanks.firstIf * 2 * ABS_TIME +
                operationRanks.firstIfTrue * MULTIPLICATION_TIME * 2 +
-               operationRanks.secondIf * COMPARE_TIME * 2 +
+               operationRanks.secondIf * COMPARE_TIME +
                operationRanks.secondIfTrue * (MULTIPLICATION_TIME + ADDITION_TIME) * 2 +
                operationRanks.secondIfFalse * (2 * MULTIPLICATION_TIME + SUBTRACTION_TIME * COMPARE_TIME) * 2 +
                operationRanks.secondIfFalse * ABS_TIME +
