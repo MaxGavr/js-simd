@@ -263,260 +263,231 @@ function drawCharts(){
 }
 
 function drawChart_Ky_n(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'n');
+    
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'n');
-        
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        n = i;
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            n = i;
+        data.addColumn('number', 'r = ' + i);
+        rows.push([n]);
 
-            data.addColumn('number', 'r = ' + i);
-            rows.push([n]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            m = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                m = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(T1 / Tn);
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(T1 / Tn);
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График зависимости Ky(n,r) от количества процессорных элементов n'
-            },
-            hAxis: {
-                title: "Количество процессорных элементов n"
-            },
-            vAxis: {
-                title: "Коэффициент ускорения Ку"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_Ky_n'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График зависимости Ky(n,r) от количества процессорных элементов n'
+        },
+        hAxis: {
+            title: "Количество процессорных элементов n"
+        },
+        vAxis: {
+            title: "Коэффициент ускорения Ку"
+        },
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_Ky_n'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
 
 function drawChart_Ky_r(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'r');
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'r');
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        m = i;
+        
+        data.addColumn('number', 'n = ' + i);
+        rows.push([m]);
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            m = i;
-            
-            data.addColumn('number', 'n = ' + i);
-            rows.push([m]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            n = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                n = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(T1 / Tn);
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(T1 / Tn);
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График Ky(n,r) от ранга задачи'
-            },
-            hAxis: {
-                title: "Ранг задачи r"
-            },
-            vAxis: {
-                title: "Коэффициент ускорения Ку"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_Ky_r'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График Ky(n,r) от ранга задачи'
+        },
+        hAxis: {
+            title: "Ранг задачи r"
+        },
+        vAxis: {
+            title: "Коэффициент ускорения Ку"
+        },
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_Ky_r'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
 
 function drawChart_e_n(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'n');
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'n');
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        n = i;
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            n = i;
+        data.addColumn('number', 'r = ' + i);
+        rows.push([n]);
 
-            data.addColumn('number', 'r = ' + i);
-            rows.push([n]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            m = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                m = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(T1 / Tn / n);
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(T1 / Tn / n);
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График зависимости e(n,r) от количества процессорных элементов n'
-            },
-            hAxis: {
-                title: "Количество процессорных элементов n"
-            },
-            vAxis: {
-                title: "Эффективность e"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_e_n'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График зависимости e(n,r) от количества процессорных элементов n'
+        },
+        hAxis: {
+            title: "Количество процессорных элементов n"
+        },
+        vAxis: {
+            title: "Эффективность e"
+        },
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_e_n'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
 
 function drawChart_e_r(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'r');
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'r');
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        m = i;
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            m = i;
+        data.addColumn('number', 'n = ' + i);
+        rows.push([m]);
 
-            data.addColumn('number', 'n = ' + i);
-            rows.push([m]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            n = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                n = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(T1 / Tn / n);
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(T1 / Tn / n);
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График зависимости e(n,r) от ранга задачи'
-            },
-            hAxis: {
-                title: "Ранг задачи r"
-            },
-            vAxis: {
-                title: "Эффективность e"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_e_r'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График зависимости e(n,r) от ранга задачи',
+        },
+        hAxis: {
+            title: "Ранг задачи r"
+        },
+        vAxis: {
+            title: "Эффективность e"
+        },
+        
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_e_r'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
 
 function drawChart_D_n(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'n');
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'n');
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        n = i;
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            n = i;
+        data.addColumn('number', 'r = ' + i);
+        rows.push([n]);
 
-            data.addColumn('number', 'r = ' + i);
-            rows.push([n]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            m = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                m = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(calculateDivergency());
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(calculateDivergency());
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График зависимости D(n,r) от количества процессорных элементов n'
-            },
-            hAxis: {
-                title: "Количество процессорных элементов n"
-            },
-            vAxis: {
-                title: "Коэффициент расхождения программы D"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_D_n'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График зависимости D(n,r) от количества процессорных элементов n'
+        },
+        hAxis: {
+            title: "Количество процессорных элементов n"
+        },
+        vAxis: {
+            title: "Коэффициент расхождения программы D"
+        },
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_D_n'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
 
 function drawChart_D_r(A, B) {
-    google.charts.load('current', {'packages':['line']});
-    google.charts.setOnLoadCallback(drawChart);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'r');
+    var rows = [];
 
-    function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'r');
-        var rows = [];
+    for (var i = 1; i <= CHART_RANGE; i++){
+        m = i;
 
-        for (var i = 1; i <= CHART_RANGE; i++){
-            m = i;
+        data.addColumn('number', 'n = ' + i);
+        rows.push([m]);
 
-            data.addColumn('number', 'n = ' + i);
-            rows.push([m]);
+        for (var j = 1; j <= CHART_RANGE; j++){
+            n = j;
 
-            for (var j = 1; j <= CHART_RANGE; j++){
-                n = j;
-
-                var C = calculate(A, B);
-                rows[i - 1].push(calculateDivergency());
-            }
+            var C = calculate(A, B);
+            rows[i - 1].push(calculateDivergency());
         }
-        data.addRows(rows);
-
-        var options = {
-            chart: {
-                title: 'График зависимости D(n,r) от ранга задачи r'
-            },
-            hAxis: {
-                title: "Ранг задачи r"
-            },
-            vAxis: {
-                title: "Коэффициент расхождения программы D"
-            },
-            width: CHART_WIDTH,
-            height: CHART_HEIGHT
-        };
-
-        var chart = new google.charts.Line(document.getElementById('chart_D_r'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
     }
+    data.addRows(rows);
+
+    var options = {
+        chart: {
+            title: 'График зависимости D(n,r) от ранга задачи r'
+        },
+        hAxis: {
+            title: "Ранг задачи r"
+        },
+        vAxis: {
+            title: "Коэффициент расхождения программы D"
+        },
+        width: CHART_WIDTH,
+        height: CHART_HEIGHT
+    };
+
+    var chart = new google.charts.Line(document.getElementById('chart_D_r'));
+    chart.draw(data, google.charts.Line.convertOptions(options));
 }
