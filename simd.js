@@ -68,7 +68,7 @@ function printResults(A, B, C){
             for (var j = 0; j < y + 1; j++){
                 currentCell = currentRow.insertCell();
                 if (i > 0 && i < x && j > 0 && j < y){
-                    currentCell.innerHTML = matrix[i][j];
+                    currentCell.innerHTML = matrix[i-1][j-1];
                 } else if (i == 0 && j == 0){
                     currentCell.innerHTML = "<b>" + title + "</b>";
                 } else if (i == 0 || j == 0){
@@ -99,17 +99,19 @@ function printResults(A, B, C){
 }
 
 function getParameters(){
-    p = document.getElementById("input_p").value;
-    m = document.getElementById("input_m").value;
-    q = document.getElementById("input_q").value;
-    n = document.getElementById("input_n").value;
-    CHART_RANGE = document.getElementById("input_chart_range").value;
+    p = parseInt(document.getElementById("input_p").value);
+    m = parseInt(document.getElementById("input_m").value);
+    q = parseInt(document.getElementById("input_q").value);
+    n = parseInt(document.getElementById("input_n").value);
 
-    ADDITION_TIME = document.getElementById("input_t1").value;
-    SUBTRACTION_TIME = document.getElementById("input_t2").value;
-    MULTIPLICATION_TIME = document.getElementById("input_t3").value;
-    ABS_TIME = document.getElementById("input_t4").value;
-    COMPARE_TIME = document.getElementById("input_t5").value;
+    CHART_RANGE = parseInt(document.getElementById("input_chart_range").value);
+    CHART_AMOUNT = parseInt(document.getElementById("input_chart_amount").value);
+
+    ADDITION_TIME = parseInt(document.getElementById("input_t1").value);
+    SUBTRACTION_TIME = parseInt(document.getElementById("input_t2").value);
+    MULTIPLICATION_TIME = parseInt(document.getElementById("input_t3").value);
+    ABS_TIME = parseInt(document.getElementById("input_t4").value);
+    COMPARE_TIME = parseInt(document.getElementById("input_t5").value);
 }
 
 function reset(){
