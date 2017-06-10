@@ -180,9 +180,10 @@ function calculateDivergency(){
                operationRanks.firstIf * 2 * ABS_TIME +
                operationRanks.firstIfTrue * MULTIPLICATION_TIME * 2 +
                operationRanks.secondIf * COMPARE_TIME +
-               operationRanks.secondIfTrue * (MULTIPLICATION_TIME + ADDITION_TIME) * 2 +
-               operationRanks.secondIfFalse * (2 * MULTIPLICATION_TIME + SUBTRACTION_TIME * COMPARE_TIME) * 2 +
-               operationRanks.secondIfFalse * ABS_TIME +
+               operationRanks.secondIfTrue * ADDITION_TIME * 2 +
+               operationRanks.secondIfTrue * MULTIPLICATION_TIME +
+               operationRanks.secondIfFalse * (MULTIPLICATION_TIME + SUBTRACTION_TIME + ABS_TIME) * 2 +
+               operationRanks.secondIfFalse * MULTIPLICATION_TIME +
                calculateParallelStages(m - 1) * p * q * ADDITION_TIME * 4) / (2 * m * p * q);
 
     var Lsum = Tn;
@@ -214,7 +215,7 @@ function calculate(A, B){
                 else{
                     totalOperations.comparison += 1;
                     operationRanks.secondIf += 1;
-                    if (a == 0){
+                    if (b == 0){
                         d = a * a + b;
 
                         totalOperations.multiplication += 1;
