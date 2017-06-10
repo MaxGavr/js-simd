@@ -1,8 +1,9 @@
 "use strict"
 
-var CHART_RANGE = 50;
+var CHART_RANGE;
+var CHART_AMOUNT;
 var CHART_WIDTH = 1200;
-var CHART_HEIGHT = 700;
+var CHART_HEIGHT = 600;
 
 var ADDITION_TIME;
 var MULTIPLICATION_TIME;
@@ -270,12 +271,14 @@ function drawChart_Ky_n(A, B) {
 
     for (var i = 1; i <= CHART_RANGE; i++){
         n = i;
-
-        data.addColumn('number', 'r = ' + i);
         rows.push([n]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             m = j;
+
+            if (i == 1){
+                data.addColumn('number', 'r = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(T1 / Tn);
@@ -307,13 +310,15 @@ function drawChart_Ky_r(A, B) {
     var rows = [];
 
     for (var i = 1; i <= CHART_RANGE; i++){
-        m = i;
-        
-        data.addColumn('number', 'n = ' + i);
+        m = i;       
         rows.push([m]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             n = j;
+
+            if (i == 1){
+                data.addColumn('number', 'n = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(T1 / Tn);
@@ -346,12 +351,14 @@ function drawChart_e_n(A, B) {
 
     for (var i = 1; i <= CHART_RANGE; i++){
         n = i;
-
-        data.addColumn('number', 'r = ' + i);
         rows.push([n]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             m = j;
+
+            if (i == 1){
+                data.addColumn('number', 'r = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(T1 / Tn / n);
@@ -383,13 +390,15 @@ function drawChart_e_r(A, B) {
     var rows = [];
 
     for (var i = 1; i <= CHART_RANGE; i++){
-        m = i;
-
-        data.addColumn('number', 'n = ' + i);
+        m = i;        
         rows.push([m]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             n = j;
+
+            if (i == 1){
+                data.addColumn('number', 'n = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(T1 / Tn / n);
@@ -423,12 +432,14 @@ function drawChart_D_n(A, B) {
 
     for (var i = 1; i <= CHART_RANGE; i++){
         n = i;
-
-        data.addColumn('number', 'r = ' + i);
         rows.push([n]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             m = j;
+
+            if (i == 1){
+                data.addColumn('number', 'r = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(calculateDivergency());
@@ -460,13 +471,15 @@ function drawChart_D_r(A, B) {
     var rows = [];
 
     for (var i = 1; i <= CHART_RANGE; i++){
-        m = i;
-
-        data.addColumn('number', 'n = ' + i);
+        m = i;       
         rows.push([m]);
 
-        for (var j = 1; j <= CHART_RANGE; j++){
+        for (var j = 1; j <= CHART_AMOUNT; j++){
             n = j;
+
+            if (i == 1){
+                data.addColumn('number', 'n = ' + j);
+            }
 
             var C = calculate(A, B);
             rows[i - 1].push(calculateDivergency());
